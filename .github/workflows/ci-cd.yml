@@ -1,20 +1,20 @@
-name: python-ci-cd-pipeline
+name: Python CI/CD Pipeline
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ main ]
 
 jobs:
-   ci-cd-quality-runs:
-    name: Lint&Automated Tests
+  ci-quality-and-tests:
+    name: Lint & Automated Tests
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository Code
+      - name: Checkout repository code
         uses: actions/checkout@v4
-      
+
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
@@ -24,8 +24,10 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txter)
+          pip install -r requirements.txt
+
       - name: Run Ruff linter
-        run: ruff eck .te
+        run: ruff check .
+
       - name: Run Pytest suite
         run: pytest -v
