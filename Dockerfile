@@ -17,11 +17,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY ./app ./app
 
 # 6. Create a non-root user for security (never run production containers as root)
-RUN adduser --disabled-password --gecos "" appuser && chown -R appuser /app
+RUN adduser --disabled-password --gecos "" appuser && chown -R appuser:appuser /app
 USER appuser
 
 # 7. Expose the application port
 EXPOSE 8000
 
+HEALTHCHECK --interval=30s --timeout=5s --start-perios=5s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')" || exit 1
 # 8. Start the production ASGI server
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
